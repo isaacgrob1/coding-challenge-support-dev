@@ -5,6 +5,13 @@ import { prisma } from '@/lib/prisma'
 async function sendEmailNotification(ticketId: string, companyId: string) {
   return new Promise((resolve) => {
     console.log(`Enviando notificación urgente para el ticket ${ticketId}...`)
+    
+    // FIX BUG 3: Añadimos la resolución de la promesa.
+    // Simulamos que el correo tarda 1 segundo en enviarse y luego resolvemos.
+    setTimeout(() => {
+      console.log(`Notificación enviada a la empresa ${companyId}.`)
+      resolve(true)
+    }, 1000)
   })
 }
 
@@ -26,6 +33,7 @@ export async function PATCH(
     }
 
     if (ticket.priority === 'Urgente' && status === 'Resuelto') {
+      // Ahora esta línea esperará 1 segundo y continuará, en lugar de colgarse.
       await sendEmailNotification(ticket.id, ticket.companyId)
     }
 

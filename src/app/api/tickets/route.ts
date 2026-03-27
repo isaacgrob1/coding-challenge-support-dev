@@ -3,7 +3,11 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
+    // FIX: Fuga de datos cerrada. 
     const tickets = await prisma.ticket.findMany({
+      where: {
+        companyId: 'TechCorp'
+      },
       orderBy: { createdAt: 'desc' },
     })
 

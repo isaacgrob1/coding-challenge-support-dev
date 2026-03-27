@@ -52,11 +52,12 @@ export default function Dashboard() {
       if (res.ok) {
         const updatedTicket = await res.json()
         
-        const ticketIndex = tickets.findIndex((t) => t.id === updatedTicket.id)
-        if (ticketIndex !== -1) {
-          tickets[ticketIndex] = updatedTicket
-          setTickets(tickets) // React no verá esto como un cambio de estado válido
-        }
+        // FIX BUG 2: Actualización inmutable del estado de React
+        // Usamos .map() para crear un nuevo arreglo, permitiendo que React
+        // detecte el cambio de estado y re-renderice la UI inmediatamente.
+        setTickets((prevTickets) =>
+          prevTickets.map((t) => (t.id === updatedTicket.id ? updatedTicket : t))
+        )
       }
     } catch (error) {
       console.error("Error resolving ticket:", error)
@@ -74,7 +75,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 relative">
+    // FIX BUG 1: Se agregó 'pb-24 md:pb-0' al contenedor principal.
+    // Esto asegura que en móviles el último ticket no quede oculto bajo el footer fijo.
+    <div className="min-h-screen bg-gray-50 relative pb-24 md:pb-0">
       
       {/* Header Fijo */}
       <header className="bg-blue-600 text-white shadow-md sticky top-0 z-10">
